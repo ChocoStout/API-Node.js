@@ -1,1 +1,0 @@
-{"version":3,"file":"modelGenero.js","sourceRoot":"","sources":["../../lib/models/modelGenero.ts"],"names":[],"mappings":";;AAAA,qCAAqC;AAErC,MAAM,MAAM,GAAG,QAAQ,CAAC,MAAM,CAAC;AAElB,QAAA,YAAY,GAAG,IAAI,MAAM,CAAC;IACnC,YAAY,EAAE;QACV,IAAI,EAAE,MAAM;QACZ,QAAQ,EAAE,uCAAuC;KACpD;IACD,aAAa,EAAE;QACX,IAAI,EAAE,IAAI;QACV,OAAO,EAAE,IAAI,CAAC,GAAG;KACpB;CACJ,CAAC,CAAC"}
