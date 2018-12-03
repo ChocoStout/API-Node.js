@@ -208,7 +208,7 @@ app.delete('/albums/delete',function(req,res) { //Funciona
     });
 });
 
-app.get('/canciones/all',function(req,res) {
+app.get('/canciones/all',function(req,res) { //Funciona
     con.connect(function(err){
         con.query('SELECT NombreArtista, NombreCancion FROM Canciones ORDER BY idCancion', function(err, result, fields) {
             res.json(result);
@@ -217,3 +217,96 @@ app.get('/canciones/all',function(req,res) {
     });
 });
 
+app.post('/canciones/new', function(req,res) { //Funciona
+    con.connect(function(err){
+        console.log(req.body.nombreArtista);
+        console.log(req.body.nombreCancion);
+        con.query('INSERT INTO Canciones (NombreArtista,NombreCancion) VALUES(?,?)',[req.body.nombreArtista,req.body.nombreCancion],function(err,result,fields) {
+            res.json(result);
+            console.log(result);
+        });
+    });
+});
+
+app.put('/canciones/update',function(req,res) { //Funciona
+    con.connect(function(err){
+        console.log(req.body.id);
+        console.log(req.body.nuevoArtista);
+        console.log(req.body.nuevaCancion);
+        con.query('UPDATE Canciones SET NombreArtista = ? , NombreCancion = ? WHERE idCancion = ?',[req.body.nuevoArtista,req.body.nuevaCancion,req.body.id],function(err,result,fields) {
+            res.json(result);
+            console.log('Se actualizo la cancion con el ID: ' + req.body.id);
+        });
+    });
+});
+
+app.delete('/canciones/delete',function(req,res) { //Funciona
+    con.connect(function(err){
+        console.log(req.body.id);
+        con.query('DELETE FROM Canciones WHERE idCancion = ?',req.body.id,function(err,result,fields) {
+            console.log('Se elimino la cancion con el ID: ' + req.body.id);
+        });
+    });
+});
+
+app.get('/canciones/tags',function(req,res) { //Funciona
+    con.connect(function(err){
+        console.log(req.body.id);
+        con.query('SELECT NombreTag FROM Tags WHERE idTag IN (SELECT idTag FROM CancionesTags WHERE idCancion = ?)',req.body.id,function(err,result,fields){
+            res.json(result);
+            console.log(result);
+        });
+    });
+});
+
+app.post('/canciones/tags',function(req,res) { //Funciona
+    con.connect(function(err){
+        console.log(req.body.idCancion);
+        console.log(req.body.idTag);
+        con.query('INSERT INTO CancionesTags (idCancion,idTag) VALUES (?,?)',[req.body.idCancion,req.body.idTag],function(err,result,find){
+            res.json(result);
+            console.log('Se inserto la cancion: ' + req.body.idAlbum + ' con el tag: ' + req.body.idTag);
+        });
+    });
+});
+
+app.get('/canciones/tags/sugerencia',function(req,res) { //Funciona
+    con.connect(function(err){
+        console.log(req.body.id);
+        con.query('SELECT NombreArtista,NombreCancion FROM Canciones WHERE (idCancion IN (SELECT DISTINCT idCancion FROM CancionesTags WHERE (idTag IN(SELECT idTag FROM CancionesTags WHERE idCancion = 1) AND (idCancion != 1)))) ORDER BY RAND() LIMIT 10',[req.body.id,req.body.id],function(err,result,find){
+            res.json(result);
+            console.log(result);
+        });
+    });
+});
+
+app.get('/canciones/generos',function(req,res) { //Funciona
+    con.connect(function(err){
+        console.log(req.body.id);
+        con.query('SELECT NombreGenero FROM Tags WHERE idGenero IN (SELECT idGenero FROM CancionesGeneros WHERE idCancion = ?)',req.body.id,function(err,result,fields){
+            res.json(result);
+            console.log(result);
+        });
+    });
+});
+
+app.post('/canciones/generos', function(req,res) { //Funciona
+    con.connect(function(err){
+        console.log(req.body.idCancion);
+        console.log(req.body.idGenero);
+        con.query('INSERT INTO CancionesGeneros (idCancion,idGenero) VALUES (?,?)',[req.body.idCancion,req.body.idGenero],function(err,result,find){
+            res.json(result);
+            console.log('Se inserto la cancion: ' + req.body.idAlbum + ' con el genero: ' + req.body.idGenero);
+        });
+    });
+});
+
+app.post('canciones/generos/sugerencia', function(req,res) {
+    con.connect(function(err){
+        console.log(req.body.id);
+        con.query('SELECT NombreArtista,NombreCancion FROM Canciones WHERE (idCancion IN (SELECT DISTINCT idCancion FROM CancionesGeneros WHERE (idGenero IN(SELECT idGenero FROM CancionesGeneros WHERE idCancion = 1) AND (idCancion != 1)))) ORDER BY RAND() LIMIT 10',[req.body.id,req.body.id],function(err,result,find){
+            res.json(result);
+            console.log(result);
+        });
+    });
+});
